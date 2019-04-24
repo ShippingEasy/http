@@ -199,6 +199,10 @@ module HTTP
       "#<#{self.class}/#{@version} #{verb.to_s.upcase} #{uri}>"
     end
 
+    def self.example
+      new(:verb => :get, :uri => "http://example.com")
+    end
+
     private
 
     # @!attribute [r] host
