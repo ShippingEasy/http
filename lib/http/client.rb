@@ -70,9 +70,16 @@ module HTTP
 
       @connection ||= HTTP::Connection.new(req, options)
 
-      unless @connection.failed_proxy_connect?
-        @connection.send_request(req)
-        @connection.read_headers!
+      begin
+        unless @connection.failed_proxy_connect?
+          @connection.send_request(req)
+          @connection.read_headers!
+        end
+      rescue Error => e
+        options.features.each do |_name, feature|
+          feature.on_error(req, e)
+        end
+        raise
       end
 
       res = Response.new(
